@@ -1,51 +1,68 @@
 package comid
 
 import (
-	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 
-	"github.com/google/uuid"
-	"github.com/veraison/eat"
+	"github.com/veraison/corim/encoding"
+	"github.com/veraison/corim/extensions"
 )
+
+type IInstanceValue interface {
+	extensions.ITypeChoiceValue
+
+	Bytes() []byte
+}
 
 // Instance stores an instance identity. The supported formats are UUID and UEID.
 type Instance struct {
-	val interface{}
-}
-
-// NewInstance instantiates an empty instance
-func NewInstance() *Instance {
-	return &Instance{}
-}
-
-// SetUEID sets the identity of the target instance to the supplied UEID
-func (o *Instance) SetUEID(val eat.UEID) *Instance {
-	if o != nil {
-		if val.Validate() != nil {
-			return nil
-		}
-		o.val = TaggedUEID(val)
-	}
-	return o
-}
-
-// SetUUID sets the identity of the target instance to the supplied UUID
-func (o *Instance) SetUUID(val uuid.UUID) *Instance {
-	if o != nil {
-		o.val = TaggedUUID(val)
-	}
-	return o
+	Value IInstanceValue
 }
 
 // NewInstanceUEID instantiates a new instance with the supplied UEID identity
-func NewInstanceUEID(val eat.UEID) *Instance {
-	return NewInstance().SetUEID(val)
+func NewInstanceUEID(val any) (*Instance, error) {
+	if val == nil {
+		return &Instance{&TaggedUEID{}}, nil
+	}
+
+	ret, err := NewTaggedUEID(val)
+	if err != nil {
+		return nil, err
+	}
+	return &Instance{ret}, nil
+}
+
+func MustNewInstanceUEID(val any) *Instance {
+	ret, err := NewInstanceUEID(val)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
 }
 
 // NewInstanceUUID instantiates a new instance with the supplied UUID identity
-func NewInstanceUUID(val uuid.UUID) *Instance {
-	return NewInstance().SetUUID(val)
+func NewInstanceUUID(val any) (*Instance, error) {
+	if val == nil {
+		return &Instance{&TaggedUUID{}}, nil
+	}
+
+	ret, err := NewTaggedUUID(val)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Instance{ret}, nil
+}
+
+func MustNewInstanceUUID(val any) *Instance {
+	ret, err := NewInstanceUUID(val)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
 }
 
 // Valid checks for the validity of given instance
@@ -56,124 +73,106 @@ func (o Instance) Valid() error {
 	return nil
 }
 
-func (o Instance) GetUEID() (eat.UEID, error) {
-	switch t := o.val.(type) {
-	case TaggedUEID:
-		return eat.UEID(t), nil
-	default:
-		return eat.UEID{}, fmt.Errorf("instance-id type is: %T", t)
-	}
-}
-
-func (o Instance) GetUUID() (UUID, error) {
-	switch t := o.val.(type) {
-	case TaggedUUID:
-		return UUID(t), nil
-	default:
-		return UUID{}, fmt.Errorf("instance-id type is: %T", t)
-	}
-}
-
 // String returns a printable string of the Instance value.  UUIDs use the
 // canonical 8-4-4-4-12 format, UEIDs are hex encoded.
 func (o Instance) String() string {
-	switch t := o.val.(type) {
-	case TaggedUUID:
-		return UUID(t).String()
-	case TaggedUEID:
-		return hex.EncodeToString(t)
-	default:
+	if o.Value == nil {
 		return ""
 	}
+
+	return o.Value.String()
+}
+
+func (o Instance) Type() string {
+	return o.Value.Type()
+}
+
+func (o Instance) Bytes() []byte {
+	return o.Value.Bytes()
 }
 
 // MarshalCBOR serializes the target instance to CBOR
 func (o Instance) MarshalCBOR() ([]byte, error) {
-	return em.Marshal(o.val)
+	return em.Marshal(o.Value)
 }
 
 func (o *Instance) UnmarshalCBOR(data []byte) error {
-	var ueid TaggedUEID
-
-	if dm.Unmarshal(data, &ueid) == nil {
-		o.val = ueid
-		return nil
-	}
-
-	var u TaggedUUID
-
-	if dm.Unmarshal(data, &u) == nil {
-		o.val = u
-		return nil
-	}
-
-	return fmt.Errorf("unknown instance type (CBOR: %x)", data)
+	return dm.Unmarshal(data, &o.Value)
 }
 
-// UnmarshalJSON deserializes the supplied JSON type/value object into the Group
-// target.  The supported formats are UUID, e.g.:
+// UnmarshalJSON deserializes the supplied JSON object into the target Instance
+// The instance object must have the following shape:
 //
 //	{
-//	  "type": "uuid",
-//	  "value": "69E027B2-7157-4758-BCB4-D9F167FE49EA"
+//	  "type": "<INSTANCE_TYPE>",
+//	  "value": "<INSTANCE_STRING_VALUE>"
 //	}
 //
-// and UEID:
+// where <INSTANCE_TYPE> must be one of the known IInstanceValue implementation
+// type names (available in the base implementation: "ueid" and "uuid"), and
+// <INSTANCE_STRING_VALUE> is the instance value encoded as a string. The exact
+// encoding is <INSTANCE_TYPE> depenent. For the base implmentation types it is
 //
-//	{
-//	  "type": "ueid",
-//	  "value": "Ad6tvu/erb7v3q2+796tvu8="
-//	}
+//	ueid: base64-encoded bytes, e.g. "YWNtZS1pbXBsZW1lbnRhdGlvbi1pZC0wMDAwMDAwMDE="
+//	uuid: standard UUID string representation, e.g. "550e8400-e29b-41d4-a716-446655440000"
 func (o *Instance) UnmarshalJSON(data []byte) error {
-	var v tnv
+	var value encoding.TypeAndValue
 
-	if err := json.Unmarshal(data, &v); err != nil {
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
 
-	switch v.Type {
-	case "uuid":
-		var x UUID
-		if err := x.UnmarshalJSON(v.Value); err != nil {
-			return err
-		}
-		o.val = TaggedUUID(x)
-	case "ueid":
-		var x UEID
-		if err := x.UnmarshalJSON(v.Value); err != nil {
-			return err
-		}
-		o.val = TaggedUEID(x)
-	default:
-		return fmt.Errorf("unknown type %s for instance", v.Type)
+	if value.Type == "" {
+		return errors.New("key type not set")
 	}
 
-	return nil
+	factory, ok := instanceValueRegister[value.Type]
+	if !ok {
+		return fmt.Errorf("unknown class id type: %q", value.Type)
+	}
+
+	v, err := factory(value.Value)
+	if err != nil {
+		return err
+	}
+
+	o.Value = v.Value
+
+	return o.Valid()
 }
 
 func (o Instance) MarshalJSON() ([]byte, error) {
-	var (
-		v   tnv
-		b   []byte
-		err error
-	)
-
-	switch t := o.val.(type) {
-	case TaggedUUID:
-		b, err = UUID(t).MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		v = tnv{Type: "uuid", Value: b}
-	case TaggedUEID:
-		b, err = UEID(t).MarshalJSON()
-		if err != nil {
-			return nil, err
-		}
-		v = tnv{Type: "ueid", Value: b}
-	default:
-		return nil, fmt.Errorf("unknown type %T for instance", t)
+	value := encoding.TypeAndValue{
+		Type:  o.Value.Type(),
+		Value: o.Value.String(),
 	}
 
-	return json.Marshal(v)
+	return json.Marshal(value)
+}
+
+type IInstanceFactory func(any) (*Instance, error)
+
+var instanceValueRegister = map[string]IInstanceFactory{
+	UEIDType: NewInstanceUEID,
+	UUIDType: NewInstanceUUID,
+}
+
+func RegisterInstanceType(tag uint64, factory IInstanceFactory) error {
+	nilVal, err := factory(nil)
+	if err != nil {
+		return err
+	}
+
+	typ := nilVal.Type()
+	if _, exists := instanceValueRegister[typ]; exists {
+		return fmt.Errorf("class ID type with name %q already exists", typ)
+	}
+
+	if err := registerCOMIDTag(tag, nilVal.Value); err != nil {
+		return err
+	}
+
+	instanceValueRegister[typ] = factory
+
+	return nil
 }

@@ -78,7 +78,7 @@ func TestEnvironment_ToCBOR_class_only(t *testing.T) {
 func TestEnvironment_ToCBOR_class_and_instance(t *testing.T) {
 	tv := Environment{
 		Class:    NewClassUUID(TestUUID),
-		Instance: NewInstanceUEID(TestUEID),
+		Instance: MustNewInstanceUEID(TestUEID),
 	}
 	require.NotNil(t, tv.Class)
 	require.NotNil(t, tv.Instance)
@@ -96,7 +96,7 @@ func TestEnvironment_ToCBOR_class_and_instance(t *testing.T) {
 
 func TestEnvironment_ToCBOR_instance_only(t *testing.T) {
 	tv := Environment{
-		Instance: NewInstanceUEID(TestUEID),
+		Instance: MustNewInstanceUEID(TestUEID),
 	}
 	require.NotNil(t, tv.Instance)
 
@@ -180,7 +180,7 @@ func TestEnvironment_FromCBOR_class_and_instance(t *testing.T) {
 	assert.NotNil(t, actual.Class)
 	assert.Equal(t, TestUUIDString, actual.Class.ClassID.String())
 	assert.NotNil(t, actual.Instance)
-	assert.Equal(t, TestUEIDString, actual.Instance.String())
+	assert.Equal(t, []byte(TestUEID), actual.Instance.Bytes())
 	assert.Nil(t, actual.Group)
 }
 

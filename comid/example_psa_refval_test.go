@@ -142,12 +142,11 @@ func extractImplementationID(c *Class) error {
 		return fmt.Errorf("no class-id")
 	}
 
-	implID, err := classID.GetImplID()
-	if err != nil {
-		return fmt.Errorf("extracting implemenetation-id: %w", err)
+	if classID.Type() != ImplIDType {
+		return fmt.Errorf("class id is not a psa.impl-id")
 	}
 
-	fmt.Printf("ImplementationID: %x\n", implID)
+	fmt.Printf("ImplementationID: %x\n", classID.Bytes())
 
 	return nil
 }

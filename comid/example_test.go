@@ -26,7 +26,7 @@ func Example_encode() {
 						SetModel("RoadRunner").
 						SetLayer(0).
 						SetIndex(1),
-					Instance: NewInstanceUEID(TestUEID),
+					Instance: MustNewInstanceUEID(TestUEID),
 					Group:    NewGroupUUID(TestUUID),
 				},
 				Measurements: *NewMeasurements().
@@ -55,7 +55,7 @@ func Example_encode() {
 						SetModel("RoadRunner").
 						SetLayer(0).
 						SetIndex(1),
-					Instance: NewInstanceUEID(TestUEID),
+					Instance: MustNewInstanceUEID(TestUEID),
 					Group:    NewGroupUUID(TestUUID),
 				},
 				Measurements: *NewMeasurements().
@@ -79,7 +79,7 @@ func Example_encode() {
 		AddAttestVerifKey(
 			AttestVerifKey{
 				Environment: Environment{
-					Instance: NewInstanceUUID(uuid.UUID(TestUUID)),
+					Instance: MustNewInstanceUUID(uuid.UUID(TestUUID)),
 				},
 				VerifKeys: *NewCryptoKeys().
 					Add(
@@ -89,7 +89,7 @@ func Example_encode() {
 		).AddDevIdentityKey(
 		DevIdentityKey{
 			Environment: Environment{
-				Instance: NewInstanceUEID(TestUEID),
+				Instance: MustNewInstanceUEID(TestUEID),
 			},
 			VerifKeys: *NewCryptoKeys().
 				Add(
@@ -144,7 +144,7 @@ func Example_encode_PSA() {
 		AddAttestVerifKey(
 			AttestVerifKey{
 				Environment: Environment{
-					Instance: NewInstanceUEID(TestUEID),
+					Instance: MustNewInstanceUEID(TestUEID),
 				},
 				VerifKeys: *NewCryptoKeys().
 					Add(
@@ -175,7 +175,7 @@ func Example_encode_PSA_attestation_verification() {
 		AddAttestVerifKey(
 			AttestVerifKey{
 				Environment: Environment{
-					Instance: NewInstanceUEID(TestUEID),
+					Instance: MustNewInstanceUEID(TestUEID),
 				},
 				VerifKeys: *NewCryptoKeys().
 					Add(

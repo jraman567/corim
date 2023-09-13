@@ -82,7 +82,7 @@ func (o *Group) UnmarshalJSON(data []byte) error {
 	}
 
 	switch v.Type {
-	case "uuid":
+	case UUIDType:
 		var x UUID
 		if err := x.UnmarshalJSON(v.Value); err != nil {
 			return err

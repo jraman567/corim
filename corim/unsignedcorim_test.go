@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/veraison/corim/comid"
@@ -182,7 +181,7 @@ func TestUnsignedCorim_Valid_ok(t *testing.T) {
 		AddAttestVerifKey(
 			comid.AttestVerifKey{
 				Environment: comid.Environment{
-					Instance: comid.NewInstanceUUID(uuid.UUID(comid.TestUUID)),
+					Instance: comid.MustNewInstanceUUID(comid.TestUUID),
 				},
 				VerifKeys: *comid.NewCryptoKeys().
 					Add(
