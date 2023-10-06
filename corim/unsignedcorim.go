@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/veraison/corim/cots"
+	"github.com/veraison/corim/encoding"
+	"github.com/veraison/corim/extensions"
 
 	"github.com/veraison/corim/comid"
 	"github.com/veraison/eat"
@@ -25,11 +27,23 @@ type UnsignedCorim struct {
 	Profiles      *[]eat.Profile `cbor:"3,keyasint,omitempty" json:"profiles,omitempty"`
 	RimValidity   *Validity      `cbor:"4,keyasint,omitempty" json:"validity,omitempty"`
 	Entities      *Entities      `cbor:"5,keyasint,omitempty" json:"entities,omitempty"`
+
+	Extensions
 }
 
 // NewUnsignedCorim instantiates an empty UnsignedCorim
 func NewUnsignedCorim() *UnsignedCorim {
 	return &UnsignedCorim{}
+}
+
+// RegisterExtensions registers a struct as a collections of extensions
+func (o *UnsignedCorim) RegisterExtensions(exts extensions.IExtensionsValue) {
+	o.Extensions.Register(exts)
+}
+
+// GetExtensions returns pervisouosly registered extension
+func (o *UnsignedCorim) GetExtensions() extensions.IExtensionsValue {
+	return o.Extensions.IExtensionsValue
 }
 
 // SetID sets the corim-id in the unsigned-corim-map to the supplied value.  The
@@ -239,17 +253,17 @@ func (o UnsignedCorim) Valid() error {
 		}
 	}
 
-	return nil
+	return o.Extensions.ValidCorim(&o)
 }
 
 // ToCBOR serializes the target unsigned CoRIM to CBOR
-func (o UnsignedCorim) ToCBOR() ([]byte, error) {
-	return em.Marshal(&o)
+func (o *UnsignedCorim) ToCBOR() ([]byte, error) {
+	return encoding.SerializeStructToCBOR(em, o)
 }
 
 // FromCBOR deserializes a CBOR-encoded unsigned CoRIM into the target UnsignedCorim
 func (o *UnsignedCorim) FromCBOR(data []byte) error {
-	return dm.Unmarshal(data, o)
+	return encoding.PopulateStructFromCBOR(dm, data, o)
 }
 
 // FromJSON deserializes a JSON-encoded unsigned CoRIM into the target UnsignedCorim
