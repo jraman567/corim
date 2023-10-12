@@ -5,6 +5,7 @@ package comid
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 
@@ -23,137 +24,71 @@ type Measurement struct {
 	AuthorizedBy *CryptoKey `cbor:"2,keyasint,omitempty" json:"authorized-by,omitempty"`
 }
 
+type IMKeyValue interface {
+	extensions.ITypeChoiceValue
+}
+
 // Mkey stores a $measured-element-type-choice.
 // The supported types are UUID, PSA refval-id, CCA platform-config-id and unsigned integer
 // TO DO Add tagged OID: see https://github.com/veraison/corim/issues/35
 type Mkey struct {
-	val interface{}
+	Value IMKeyValue
 }
 
 func (o Mkey) IsSet() bool {
-	return o.val != nil
+	return o.Value != nil
 }
 
 func (o Mkey) Valid() error {
-	switch t := o.val.(type) {
-	case TaggedUUID:
-		if UUID(t).Empty() {
-			return fmt.Errorf("empty UUID")
-		}
-		return nil
-	case TaggedPSARefValID:
-		return PSARefValID(t).Valid()
-	case TaggedCCAPlatformConfigID:
-		if CCAPlatformConfigID(t).Empty() {
-			return fmt.Errorf("empty CCAPlatformConfigID")
-		}
-	case uint64:
-		if o.val == nil {
-			return fmt.Errorf("empty uint Mkey")
-		}
-		return nil
-	default:
-		return fmt.Errorf("unknown measurement key type: %T", t)
-	}
-	return nil
-}
-
-func (o Mkey) IsPSARefValID() bool {
-	_, ok := o.val.(TaggedPSARefValID)
-	return ok
-}
-
-func (o Mkey) IsCCAPlatformConfigID() bool {
-	_, ok := o.val.(TaggedCCAPlatformConfigID)
-	return ok
-}
-
-func (o Mkey) GetPSARefValID() (PSARefValID, error) {
-	switch t := o.val.(type) {
-	case TaggedPSARefValID:
-		return PSARefValID(t), nil
-	default:
-		return PSARefValID{}, fmt.Errorf("measurement-key type is: %T", t)
-	}
-}
-
-func (o Mkey) GetCCAPlatformConfigID() (CCAPlatformConfigID, error) {
-	switch t := o.val.(type) {
-	case TaggedCCAPlatformConfigID:
-		return CCAPlatformConfigID(t), nil
-	default:
-		return CCAPlatformConfigID(""), fmt.Errorf("measurement-key type is: %T", t)
-	}
-}
-
-func (o Mkey) GetKeyUint() (uint64, error) {
-	switch t := o.val.(type) {
-	case uint64:
-		return t, nil
-	default:
-		return MaxUint64, fmt.Errorf("measurement-key type is: %T", t)
-	}
+	return o.Value.Valid()
+	//switch t := o.val.(type) {
+	//case TaggedUUID:
+	//if UUID(t).Empty() {
+	//return fmt.Errorf("empty UUID")
+	//}
+	//return nil
+	//case TaggedPSARefValID:
+	//return PSARefValID(t).Valid()
+	//case TaggedCCAPlatformConfigID:
+	//if CCAPlatformConfigID(t).Empty() {
+	//return fmt.Errorf("empty CCAPlatformConfigID")
+	//}
+	//case uint64:
+	//if o.val == nil {
+	//return fmt.Errorf("empty uint Mkey")
+	//}
+	//return nil
+	//default:
+	//return fmt.Errorf("unknown measurement key type: %T", t)
+	//}
+	//return nil
 }
 
 // UnmarshalJSON deserializes the type'n'value JSON object into the target Mkey
 func (o *Mkey) UnmarshalJSON(data []byte) error {
-	var v tnv
+	var value encoding.TypeAndValue
 
-	if err := json.Unmarshal(data, &v); err != nil {
+	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
 
-	switch v.Type {
-	case "uuid":
-		var x UUID
-		if err := x.UnmarshalJSON(v.Value); err != nil {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type UUID: %w",
-				err,
-			)
-		}
-		o.val = TaggedUUID(x)
-	case "psa.refval-id":
-		var x PSARefValID
-		if err := json.Unmarshal(v.Value, &x); err != nil {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type PSARefValID: %w",
-				err,
-			)
-		}
-		if err := x.Valid(); err != nil {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type PSARefValID: %w",
-				err,
-			)
-		}
-		o.val = TaggedPSARefValID(x)
-	case "cca.platform-config-id":
-		var x CCAPlatformConfigID
-		if err := json.Unmarshal(v.Value, &x); err != nil {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type CCAPlatformConfigID: %w",
-				err,
-			)
-		}
-		if x.Empty() {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type CCAPlatformConfigID: empty label",
-			)
-		}
-		o.val = TaggedCCAPlatformConfigID(x)
-	case "uint":
-		var x uint64
-		if err := json.Unmarshal(v.Value, &x); err != nil {
-			return fmt.Errorf(
-				"cannot unmarshal $measured-element-type-choice of type uint: %w",
-				err,
-			)
-		}
-		o.val = x
-	default:
-		return fmt.Errorf("unknown type %s for $measured-element-type-choice", v.Type)
+	if value.Type == "" {
+		return errors.New("measurement type not set")
 	}
+
+	factory, ok := classIDValueRegister[value.Type]
+	if !ok {
+		return fmt.Errorf("unknown measurement type: %q", value.Type)
+	}
+
+	v, err := factory(value.Value)
+	if err != nil {
+		return err
+	}
+
+	o.Value = v.Value
+
+	return o.Valid()
 
 	return nil
 }
