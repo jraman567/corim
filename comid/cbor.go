@@ -35,6 +35,7 @@ var (
 		600: TaggedImplID{},
 		601: TaggedPSARefValID{},
 		602: TaggedCCAPlatformConfigID(""),
+		32464: TaggedCertAmdArkAsk{},
 	}
 )
 
