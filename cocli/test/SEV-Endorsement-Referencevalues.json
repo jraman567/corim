@@ -1,0 +1,36 @@
+{
+    "lang": "en-GB",
+    "tag-identity": {
+        "id": "57169800-884b-4432-b04e-a2c9c059f4f3",
+        "version": 0
+    },
+    "triples": {
+        "reference-values": [
+            {
+                "environment": {
+                    "class": {
+                        "vendor": "AMD",
+                        "model": "Milan"
+                    },
+                    "instance": {
+                        "type": "uuid",
+                        "value": "f085e04c-3b8b-4726-b2a1-38348256648d"
+                    }
+                },
+                "measurements": [
+                    {
+                        "value": {
+                            "digests": [
+                                "sha-256:rqCGHqZi+KRTQS58LRwPBWThz2YYEUa3x2krLjopdLw="
+                            ]
+                        },
+                        "raw-value": {
+                            "type": "bytes",
+                            "value": "2345"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

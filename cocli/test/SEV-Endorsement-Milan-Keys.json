@@ -1,0 +1,25 @@
+{
+    "lang": "en-GB",
+    "tag-identity": {
+        "id": "a331c36f-09df-4d2a-9c04-8a64c0805c5d",
+        "version": 0
+    },
+    "triples": {
+        "attester-verification-keys": [
+            {
+                "environment": {
+                    "class": {
+                        "vendor": "AMD",
+                        "model": "Milan"
+                    }
+                },
+                "verification-keys": [
+                    {
+			"type": "cert-amd-ark-ask",
+			"value": "ABCDEFGHIJKL"
+                    }
+                ]
+            }
+        ]
+    }
+}
