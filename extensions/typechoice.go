@@ -3,7 +3,7 @@ package extensions
 import (
 	"encoding/json"
 
-	"github.com/veraison/corim/encoding"
+	"github.com/jraman567/corim/encoding"
 )
 
 var StringType = "string"

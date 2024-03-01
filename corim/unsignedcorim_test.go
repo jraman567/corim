@@ -10,8 +10,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/veraison/corim/comid"
-	"github.com/veraison/corim/cots"
+	"github.com/jraman567/corim/comid"
+	"github.com/jraman567/corim/cots"
 	"github.com/veraison/swid"
 )
 
