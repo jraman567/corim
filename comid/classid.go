@@ -11,8 +11,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 )
 
 // ClassID identifies the environment via a well-known identifier. This can be

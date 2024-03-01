@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/veraison/corim/cots"
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/cots"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 
-	"github.com/veraison/corim/comid"
+	"github.com/jraman567/corim/comid"
 	"github.com/veraison/eat"
 	"github.com/veraison/swid"
 )
