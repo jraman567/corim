@@ -4,8 +4,8 @@
 package comid
 
 import (
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 )
 
 var True = true

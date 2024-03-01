@@ -3,7 +3,7 @@
 package corim
 
 import (
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/extensions"
 )
 
 type IEntityConstrainer interface {
