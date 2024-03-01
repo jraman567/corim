@@ -11,7 +11,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/veraison/corim/encoding"
+	"github.com/jraman567/corim/encoding"
 )
 
 type testExtensible struct {

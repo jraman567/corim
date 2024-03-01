@@ -10,8 +10,8 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 	"github.com/veraison/eat"
 	"github.com/veraison/swid"
 	"github.com/virtee/sev-snp-measure-go/ovmf"
@@ -21,7 +21,7 @@ const MaxUint64 = ^uint64(0)
 
 // Mkey stores a $measured-element-type-choice.
 // The supported types are UUID, PSA refval-id, CCA platform-config-id and unsigned integer
-// TO DO Add tagged OID: see https://github.com/veraison/corim/issues/35
+// TO DO Add tagged OID: see https://github.com/jraman567/corim/issues/35
 type Mkey struct {
 	Value IMKeyValue
 }
@@ -462,7 +462,7 @@ func (o Mval) Valid() error {
 
 	// raw value and mask have no specific semantics
 
-	// TODO(tho) MAC addr & friends (see https://github.com/veraison/corim/issues/18)
+	// TODO(tho) MAC addr & friends (see https://github.com/jraman567/corim/issues/18)
 
 	return o.Extensions.validMval(&o)
 }

@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 )
 
 // SVN is the Security Version Number. This typically changes only when a

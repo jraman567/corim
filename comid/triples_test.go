@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/extensions"
 )
 
 func TestTriples_extensions(t *testing.T) {

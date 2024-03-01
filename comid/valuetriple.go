@@ -6,7 +6,7 @@ package comid
 import (
 	"fmt"
 
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/extensions"
 )
 
 // ValueTriple relates a measurement to a target environment, essentially

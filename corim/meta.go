@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/extensions"
 )
 
 // Meta stores a corim-meta-map with JSON and CBOR serializations.  It carries
