@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/veraison/corim/comid"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/comid"
+	"github.com/jraman567/corim/extensions"
 	"github.com/veraison/eat"
 	"github.com/veraison/go-cose"
 )

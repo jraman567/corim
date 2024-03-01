@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"unicode/utf8"
 
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 )
 
 // Entity stores an entity-map capable of CBOR and JSON serializations.

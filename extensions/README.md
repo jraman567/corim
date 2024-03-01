@@ -147,8 +147,8 @@ import (
 	"log"
 
 	"github.com/google/uuid"
-	"github.com/veraison/corim/comid"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/comid"
+	"github.com/jraman567/corim/extensions"
 )
 
 // the struct containing the extensions
@@ -344,7 +344,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/veraison/corim/comid"
+	"github.com/jraman567/corim/comid"
 )
 
 // the CBOR tag to be used for the new type
@@ -450,7 +450,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/veraison/corim/comid"
+	"github.com/jraman567/corim/comid"
 )
 
 var sampleText = `

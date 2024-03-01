@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/extensions"
 )
 
 // ValueTriple relates measurements to a target environment, essentially

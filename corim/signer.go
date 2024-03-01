@@ -13,9 +13,9 @@ import (
 	"reflect"
 
 	"github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/veraison/corim/comid"
-	"github.com/veraison/corim/encoding"
-	"github.com/veraison/corim/extensions"
+	"github.com/jraman567/corim/comid"
+	"github.com/jraman567/corim/encoding"
+	"github.com/jraman567/corim/extensions"
 	cose "github.com/veraison/go-cose"
 )
 

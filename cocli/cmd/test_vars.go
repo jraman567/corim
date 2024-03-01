@@ -6,7 +6,7 @@ package cmd
 import (
 	_ "embed"
 
-	"github.com/veraison/corim/comid"
+	"github.com/jraman567/corim/comid"
 )
 
 var (

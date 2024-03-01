@@ -8,7 +8,7 @@ import (
 	"reflect"
 
 	cbor "github.com/fxamacker/cbor/v2"
-	"github.com/veraison/corim/comid"
+	"github.com/jraman567/corim/comid"
 )
 
 var (
