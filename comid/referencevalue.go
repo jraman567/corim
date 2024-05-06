@@ -6,9 +6,9 @@ package comid
 import "fmt"
 
 type ReferenceValue struct {
-	_            struct{}     `cbor:",toarray"`
-	Environment  Environment  `json:"environment"`
-	Measurements Measurements `json:"measurements"`
+	_                struct{}     `cbor:",toarray"`
+	Environment      Environment  `json:"environment"`
+	Measurements     Measurements `json:"measurements"`
 }
 
 func (o ReferenceValue) Valid() error {
