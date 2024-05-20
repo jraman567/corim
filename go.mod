@@ -4,13 +4,14 @@ go 1.22
 
 require (
 	github.com/fxamacker/cbor/v2 v2.5.0
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.1
 	github.com/lestrrat-go/jwx/v2 v2.0.8
 	github.com/spf13/cast v1.4.1
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	github.com/veraison/eat v0.0.0-20210331113810-3da8a4dd42ff
 	github.com/veraison/go-cose v1.2.1
 	github.com/veraison/swid v1.1.1-0.20230911094910-8ffdd07a22ca
+	github.com/virtee/sev-snp-measure-go v0.0.0-20240530153610-e6e8dc9b6877
 )
 
 require (
