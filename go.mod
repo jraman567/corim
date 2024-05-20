@@ -3,6 +3,7 @@ module github.com/veraison/corim
 go 1.18
 
 require (
+	github.com/edgelesssys/sev-snp-measure-go v0.0.0-20240422064034-4360f4dbe14a
 	github.com/fxamacker/cbor/v2 v2.5.0
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
