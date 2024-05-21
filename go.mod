@@ -1,6 +1,6 @@
 module github.com/veraison/corim
 
-go 1.18
+go 1.20
 
 require (
 	github.com/edgelesssys/sev-snp-measure-go v0.0.0-20240422064034-4360f4dbe14a
