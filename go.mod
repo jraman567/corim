@@ -1,6 +1,6 @@
 module github.com/jraman567/corim
 
-go 1.22
+go 1.21
 
 require (
 	github.com/fxamacker/cbor/v2 v2.5.0
